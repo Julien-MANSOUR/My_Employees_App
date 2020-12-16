@@ -12,10 +12,22 @@ class Main(QWidget):
 
     def UI(self):
         self.mainDesign()
+        self.layouts()
 
     def mainDesign(self):
         pass
+    def layouts(self):
+        '''deffining layouts for our application'''
+        self.mainLayout=QHBoxLayout()
+        self.leftLayout=QFormLayout()#employee informations
+        self.rightMainLayout=QHBoxLayout()
+        self.rightTopLayout=QHBoxLayout()#doesnt matter if hb or vb
+        self.rightBottomLayout=QHBoxLayout()# 3buttons
 
+        self.rightMainLayout.addLayout(self.rightTopLayout)
+        self.rightBottomLayout.addLayout(self.rightBottomLayout)
+        self.mainLayout.addLayout(self.leftLayout)
+        self.mainLayout.addLayout(self.rightMainLayout)
 
 def main():
     App = QApplication(sys.argv)
