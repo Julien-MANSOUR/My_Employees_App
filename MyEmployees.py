@@ -15,20 +15,31 @@ class Main(QWidget):
         self.layouts()
 
     def mainDesign(self):
-        pass
+        self.employeesList=QListWidget()
+        self.btnNew=QPushButton("New")
+        self.btnUpdate=QPushButton("Update")
+        self.btnDelete=QPushButton("Delete")
+
     def layouts(self):
         '''deffining layouts for our application'''
+        ##################Layout#########################
         self.mainLayout=QHBoxLayout()
         self.leftLayout=QFormLayout()#employee informations
-        self.rightMainLayout=QHBoxLayout()
+        self.rightMainLayout=QVBoxLayout()
         self.rightTopLayout=QHBoxLayout()#doesnt matter if hb or vb
         self.rightBottomLayout=QHBoxLayout()# 3buttons
-
+        ###################Adding child layouts to main layouts##############
         self.rightMainLayout.addLayout(self.rightTopLayout)
-        self.rightBottomLayout.addLayout(self.rightBottomLayout)
-        self.mainLayout.addLayout(self.leftLayout)
-        self.mainLayout.addLayout(self.rightMainLayout)
-
+        self.rightMainLayout.addLayout(self.rightBottomLayout)
+        self.mainLayout.addLayout(self.leftLayout,40)#40% space area
+        self.mainLayout.addLayout(self.rightMainLayout,60)#60% space area
+        ##################Adding widgets to layouts###################
+        self.rightTopLayout.addWidget(self.employeesList)
+        self.rightBottomLayout.addWidget(self.btnNew)
+        self.rightBottomLayout.addWidget(self.btnUpdate)
+        self.rightBottomLayout.addWidget(self.btnDelete)
+        ########################Setting main layout####################
+        self.setLayout(self.mainLayout)
 def main():
     App = QApplication(sys.argv)
     window = Main()
