@@ -1,6 +1,9 @@
 from PyQt5.QtWidgets import *
 import sys
+import sqlite3
 
+connection=sqlite3.connect("employees.db")
+cursor=connection.cursor()
 
 class Main(QWidget):
     def __init__(self):
