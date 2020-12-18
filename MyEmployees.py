@@ -2,9 +2,11 @@ from PyQt5.QtWidgets import *
 import sys
 import sqlite3
 from PyQt5.QtGui import QFont,QPixmap
+import sys ,os
+from PIL import Image # pillow is a huge package we just need Image
 connection = sqlite3.connect("employees.db")
 cursor = connection.cursor()
-
+defaultImage="person.png" #if the employee dosnt have a picture
 
 class Main(QWidget):
     def __init__(self):
@@ -93,6 +95,8 @@ class AddEmployee(QWidget):
         self.imgLbl=QLabel("Picture :")
         self.imgButton=QPushButton("Browse")
         self.imgButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
+        self.imgButton.clicked.connect(self.uploadImage)
+
         self.addressLbl=QLabel("Address :")
         self.addressEditor=QTextEdit()
         self.addButton=QPushButton("Add")
@@ -124,6 +128,17 @@ class AddEmployee(QWidget):
         self.bottomLayout.addRow("",self.addButton)
         ####################setting main layout for our second window########
         self.setLayout(self.mainLayout)
+
+    def uploadImage(self):
+        global defaultImage
+        size=(128,128)#tuple width and hight
+        self.fileName,ok=QFileDialog.getOpenFileName(self,"Upload image",'',"Image Files (*.jpg *.png")
+        if ok:
+            defaultImage=os.path.basename(self.fileName)#il nous donne le nom du picture.png sans tout le path
+                                                        #replacing newfileName by defaultImage
+            img=Image.open(self.fileName)#i used self.fileNAme bcz i need all the url
+            img=img.resize(size)
+            img.save("images/{}".format(defaultImage))# we are saving our chosen image in the image folder
 
 
 def main():
