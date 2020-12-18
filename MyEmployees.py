@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import *
 import sys
 import sqlite3
-
+from PyQt5.QtGui import QFont,QPixmap
 connection = sqlite3.connect("employees.db")
 cursor = connection.cursor()
 
@@ -61,9 +61,42 @@ class AddEmployee(QWidget):
 
     def UI(self):
         self.mainDesign()
+        self.layouts()
 
     def mainDesign(self):
-        pass
+        #########################top layouts widgets##################
+        self.title=QLabel("Add person")
+        self.title.setStyleSheet("font-size: 24pt;font-family:Arial bold ;background-color: red")
+        self.imgAdd=QLabel()
+        self.imgAdd.setPixmap(QPixmap("icons/person.png"))
+        ########################bottom layouts widgets###############
+        self.nameLbl = QLabel("Name :")
+        self.nameEntry=QLineEdit()
+        self.nameEntry.setPlaceholderText("Enter Employee Name")
+        self.surnameLbl = QLabel("Surname :")
+        self.surnameEntry = QLineEdit()
+        self.surnameEntry.setPlaceholderText("Enter Employee surname")
+
+        self.phoneLbl = QLabel("Phone :")
+        self.phoneEntry = QLineEdit()
+        self.phoneEntry.setPlaceholderText("Enter Employee phone number")
+
+        self.emailLbl = QLabel("Email :")
+        self.emailEntry = QLineEdit()
+        self.emailEntry.setPlaceholderText("Enter Employee email")
+
+        self.nameLbl = QLabel("Nme :")
+        self.nameEntry = QLineEdit()
+        self.nameEntry.setPlaceholderText("Enter Employee Name")
+
+        self.imgLbl=QLabel("Picture :")
+        self.imgButton=QPushButton("Browse")
+
+        self.addressLbl=QLabel("Address :")
+        self.addressEditor=QTextEdit()
+        self.addButton=QPushButton("Add")
+
+
     def layouts(self):
         ####################creating main layouts################
         self.mainLayout=QVBoxLayout()
@@ -71,8 +104,22 @@ class AddEmployee(QWidget):
         self.bottomLayout=QFormLayout()
         ######################creating child layouts to main layouts#######3
         self.mainLayout.addLayout(self.topLayout)
-        self.mainLayout.addWidget(self.bottomLayout)
-
+        self.mainLayout.addLayout(self.bottomLayout)
+        ######################## adding widgets to layouts#################
+                    #####top layout####
+        self.topLayout.addStretch()
+        self.topLayout.addWidget(self.title)
+        self.topLayout.addWidget(self.imgAdd)
+        self.topLayout.addStretch()
+        self.topLayout.setContentsMargins(100,20,100,30)#left,top,right,bottom
+                    #####Bottom layout#######
+        self.bottomLayout.addRow(self.nameLbl,self.nameEntry)
+        self.bottomLayout.addRow(self.surnameLbl,self.surnameEntry)
+        self.bottomLayout.addRow(self.phoneLbl,self.phoneEntry)
+        self.bottomLayout.addRow(self.emailLbl,self.emailEntry)
+        self.bottomLayout.addRow(self.imgLbl,self.imgButton)
+        self.bottomLayout.addRow(self.addressLbl,self.addressEditor)
+        self.bottomLayout.addRow("",self.addButton)
         ####################setting main layout for our second window########
         self.setLayout(self.mainLayout)
 
