@@ -65,8 +65,9 @@ class AddEmployee(QWidget):
 
     def mainDesign(self):
         #########################top layouts widgets##################
+        self.setStyleSheet("background-color: white;font-size: 14pt;font-family:Times")
         self.title=QLabel("Add person")
-        self.title.setStyleSheet("font-size: 24pt;font-family:Arial bold ;background-color: red")
+        self.title.setStyleSheet("font-size: 24pt;font-family:Arial bold ;background-color:orange")
         self.imgAdd=QLabel()
         self.imgAdd.setPixmap(QPixmap("icons/person.png"))
         ########################bottom layouts widgets###############
@@ -85,16 +86,17 @@ class AddEmployee(QWidget):
         self.emailEntry = QLineEdit()
         self.emailEntry.setPlaceholderText("Enter Employee email")
 
-        self.nameLbl = QLabel("Nme :")
+        self.nameLbl = QLabel("Name :")
         self.nameEntry = QLineEdit()
         self.nameEntry.setPlaceholderText("Enter Employee Name")
 
         self.imgLbl=QLabel("Picture :")
         self.imgButton=QPushButton("Browse")
-
+        self.imgButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
         self.addressLbl=QLabel("Address :")
         self.addressEditor=QTextEdit()
         self.addButton=QPushButton("Add")
+        self.addButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
 
 
     def layouts(self):
