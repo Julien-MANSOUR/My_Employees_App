@@ -101,7 +101,7 @@ class AddEmployee(QWidget):
         self.addressEditor=QTextEdit()
         self.addButton=QPushButton("Add")
         self.addButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
-
+        self.addButton.clicked.connect(self.newEmployee)
 
     def layouts(self):
         ####################creating main layouts################
@@ -139,6 +139,27 @@ class AddEmployee(QWidget):
             img=Image.open(self.fileName)#i used self.fileNAme bcz i need all the url
             img=img.resize(size)
             img.save("images/{}".format(defaultImage))# we are saving our chosen image in the image folder
+
+    def newEmployee(self):
+        global defaultImage
+        name =self.nameEntry.text()
+        surname=self.surnameEntry.text()
+        phone=self.phoneEntry.text()
+        email=self.emailEntry.text()
+        img=defaultImage
+        address=self.addressEditor.toPlainText()
+        if (name and  surname and phone != ""):
+            try:#if you want to make a data base record we should use try exept
+                query="INSERT INTO employees (name,sirname,phone,email,image,address) VALUES (?,? ,?, ?, ?,?)"
+                cursor.execute(query,(name,surname,phone,email,img,address))
+                connection.commit()
+                QMessageBox.information(self,"Success","Person has been added")
+            except:
+                QMessageBox.warning(self,"Warning","Person has not been added")
+        else:
+            QMessageBox.warning(self, "WARNING", "Fields can not be empty")
+
+
 
 
 def main():
