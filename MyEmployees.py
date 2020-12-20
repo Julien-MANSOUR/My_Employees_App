@@ -26,6 +26,7 @@ class Main(QWidget):
     def mainDesign(self):
         self.setStyleSheet("font-size: 14pt;font-family:Arial Bold;")
         self.employeesList = QListWidget()
+        self.employeesList.itemClicked.connect(self.singleClick)
         self.btnNew = QPushButton("New")
         self.btnNew.clicked.connect(self.addEmployee)
         self.btnUpdate = QPushButton("Update")
@@ -75,7 +76,7 @@ class Main(QWidget):
         phone=QLabel(employee[3])
         email=QLabel(employee[4])
         address=QLabel(employee[6])
-        self.leftLayout.setVerticalSpacing(20)#20 pixels between each widget 
+        self.leftLayout.setVerticalSpacing(20)#20 pixels between each widget
         self.leftLayout.addRow("",img)
         self.leftLayout.addRow("Name:",name)
         self.leftLayout.addRow("Surname: ",surname)
@@ -83,8 +84,34 @@ class Main(QWidget):
         self.leftLayout.addRow("Email: ",email)
         self.leftLayout.addRow("Address: ",address)
 
-
-
+    def singleClick(self):
+        ####delete previous wigets and replace them with the chosen person###
+        for i in reversed(range(self.leftLayout.count())):
+            widget=self.leftLayout.takeAt(i).widget()
+            print(widget)
+            if widget is not None:
+                widget.deleteLater()
+        #######replacing the deleted widgets by the selected ones###########
+        employee=self.employeesList.currentItem().text()
+        id=employee.split("-")[0]#we used split to get the id from our string and search in databbase using the id
+        print(id)
+        query=("SELECT * FROM employees WHERE id=?")
+        person=cursor.execute(query,(id,)).fetchone()#after query we should use a tuple / so a single item tuple=(1,)
+        print(person)
+        img = QLabel()
+        img.setPixmap(QPixmap("images/{}".format(employee[5])))
+        name = QLabel(person[1])
+        surname = QLabel(person[2])
+        phone = QLabel(person[3])
+        email = QLabel(person[4])
+        address = QLabel(person[6])
+        self.leftLayout.setVerticalSpacing(20)  # 20 pixels between each widget
+        self.leftLayout.addRow("", img)
+        self.leftLayout.addRow("Name:", name)
+        self.leftLayout.addRow("Surname: ", surname)
+        self.leftLayout.addRow("Phone: ", phone)
+        self.leftLayout.addRow("Email: ", email)
+        self.leftLayout.addRow("Address: ", address)
 
 
 
