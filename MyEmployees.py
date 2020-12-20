@@ -1,12 +1,14 @@
 from PyQt5.QtWidgets import *
 import sys
 import sqlite3
-from PyQt5.QtGui import QFont,QPixmap
-import sys ,os
-from PIL import Image # pillow is a huge package we just need Image
+from PyQt5.QtGui import QFont, QPixmap
+import sys, os
+from PIL import Image  # pillow is a huge package we just need Image
+
 connection = sqlite3.connect("employees.db")
 cursor = connection.cursor()
-defaultImage="person.png" #if the employee dosnt have a picture
+defaultImage = "person.png"  # if the employee dosnt have a picture
+
 
 class Main(QWidget):
     def __init__(self):
@@ -64,17 +66,21 @@ class AddEmployee(QWidget):
     def UI(self):
         self.mainDesign()
         self.layouts()
+    def closeEvent(self, event):# when we close the seconde window we obtaine a close event
+        self.main=Main() #whenever we close the seconde windows
+                        #we return to the first one by creating the main class everytime
+                        #main class contains self.show so it appears by itself
 
     def mainDesign(self):
         #########################top layouts widgets##################
         self.setStyleSheet("background-color: white;font-size: 14pt;font-family:Times")
-        self.title=QLabel("Add person")
+        self.title = QLabel("Add person")
         self.title.setStyleSheet("font-size: 24pt;font-family:Arial bold ;background-color:orange")
-        self.imgAdd=QLabel()
+        self.imgAdd = QLabel()
         self.imgAdd.setPixmap(QPixmap("icons/person.png"))
         ########################bottom layouts widgets###############
         self.nameLbl = QLabel("Name :")
-        self.nameEntry=QLineEdit()
+        self.nameEntry = QLineEdit()
         self.nameEntry.setPlaceholderText("Enter Employee Name")
         self.surnameLbl = QLabel("Surname :")
         self.surnameEntry = QLineEdit()
@@ -92,74 +98,73 @@ class AddEmployee(QWidget):
         self.nameEntry = QLineEdit()
         self.nameEntry.setPlaceholderText("Enter Employee Name")
 
-        self.imgLbl=QLabel("Picture :")
-        self.imgButton=QPushButton("Browse")
+        self.imgLbl = QLabel("Picture :")
+        self.imgButton = QPushButton("Browse")
         self.imgButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
         self.imgButton.clicked.connect(self.uploadImage)
 
-        self.addressLbl=QLabel("Address :")
-        self.addressEditor=QTextEdit()
-        self.addButton=QPushButton("Add")
+        self.addressLbl = QLabel("Address :")
+        self.addressEditor = QTextEdit()
+        self.addButton = QPushButton("Add")
         self.addButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
         self.addButton.clicked.connect(self.newEmployee)
 
     def layouts(self):
         ####################creating main layouts################
-        self.mainLayout=QVBoxLayout()
-        self.topLayout=QVBoxLayout()
-        self.bottomLayout=QFormLayout()
+        self.mainLayout = QVBoxLayout()
+        self.topLayout = QVBoxLayout()
+        self.bottomLayout = QFormLayout()
         ######################creating child layouts to main layouts#######3
         self.mainLayout.addLayout(self.topLayout)
         self.mainLayout.addLayout(self.bottomLayout)
         ######################## adding widgets to layouts#################
-                    #####top layout####
+        #####top layout####
         self.topLayout.addStretch()
         self.topLayout.addWidget(self.title)
         self.topLayout.addWidget(self.imgAdd)
         self.topLayout.addStretch()
-        self.topLayout.setContentsMargins(100,20,100,30)#left,top,right,bottom
-                    #####Bottom layout#######
-        self.bottomLayout.addRow(self.nameLbl,self.nameEntry)
-        self.bottomLayout.addRow(self.surnameLbl,self.surnameEntry)
-        self.bottomLayout.addRow(self.phoneLbl,self.phoneEntry)
-        self.bottomLayout.addRow(self.emailLbl,self.emailEntry)
-        self.bottomLayout.addRow(self.imgLbl,self.imgButton)
-        self.bottomLayout.addRow(self.addressLbl,self.addressEditor)
-        self.bottomLayout.addRow("",self.addButton)
+        self.topLayout.setContentsMargins(100, 20, 100, 30)  # left,top,right,bottom
+        #####Bottom layout#######
+        self.bottomLayout.addRow(self.nameLbl, self.nameEntry)
+        self.bottomLayout.addRow(self.surnameLbl, self.surnameEntry)
+        self.bottomLayout.addRow(self.phoneLbl, self.phoneEntry)
+        self.bottomLayout.addRow(self.emailLbl, self.emailEntry)
+        self.bottomLayout.addRow(self.imgLbl, self.imgButton)
+        self.bottomLayout.addRow(self.addressLbl, self.addressEditor)
+        self.bottomLayout.addRow("", self.addButton)
         ####################setting main layout for our second window########
         self.setLayout(self.mainLayout)
 
     def uploadImage(self):
         global defaultImage
-        size=(128,128)#tuple width and hight
-        self.fileName,ok=QFileDialog.getOpenFileName(self,"Upload image",'',"Image Files (*.jpg *.png")
+        size = (128, 128)  # tuple width and hight
+        self.fileName, ok = QFileDialog.getOpenFileName(self, "Upload image", '', "Image Files (*.jpg *.png")
         if ok:
-            defaultImage=os.path.basename(self.fileName)#il nous donne le nom du picture.png sans tout le path
-                                                        #replacing newfileName by defaultImage
-            img=Image.open(self.fileName)#i used self.fileNAme bcz i need all the url
-            img=img.resize(size)
-            img.save("images/{}".format(defaultImage))# we are saving our chosen image in the image folder
+            defaultImage = os.path.basename(self.fileName)  # il nous donne le nom du picture.png sans tout le path
+            # replacing newfileName by defaultImage
+            img = Image.open(self.fileName)  # i used self.fileNAme bcz i need all the url
+            img = img.resize(size)
+            img.save("images/{}".format(defaultImage))  # we are saving our chosen image in the image folder
 
     def newEmployee(self):
         global defaultImage
-        name =self.nameEntry.text()
-        surname=self.surnameEntry.text()
-        phone=self.phoneEntry.text()
-        email=self.emailEntry.text()
-        img=defaultImage
-        address=self.addressEditor.toPlainText()
-        if (name and  surname and phone != ""):
-            try:#if you want to make a data base record we should use try exept
-                query="INSERT INTO employees (name,sirname,phone,email,image,address) VALUES (?,? ,?, ?, ?,?)"
-                cursor.execute(query,(name,surname,phone,email,img,address))
+        name = self.nameEntry.text()
+        surname = self.surnameEntry.text()
+        phone = self.phoneEntry.text()
+        email = self.emailEntry.text()
+        img = defaultImage
+        address = self.addressEditor.toPlainText()
+        if (name and surname and phone != ""):
+            try:  # if you want to make a data base record we should use try exept
+                query = "INSERT INTO employees (name,sirname,phone,email,image,address) VALUES (?,? ,?, ?, ?,?)"
+                cursor.execute(query, (name, surname, phone, email, img, address))
                 connection.commit()
-                QMessageBox.information(self,"Success","Person has been added")
+                QMessageBox.information(self, "Success", "Person has been added")
+                self.close() #it returns to the main window grace a close event
             except:
-                QMessageBox.warning(self,"Warning","Person has not been added")
+                QMessageBox.warning(self, "Warning", "Person has not been added")
         else:
             QMessageBox.warning(self, "WARNING", "Fields can not be empty")
-
-
 
 
 def main():
