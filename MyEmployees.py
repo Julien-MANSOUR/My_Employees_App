@@ -21,6 +21,7 @@ class Main(QWidget):
     def UI(self):
         self.mainDesign()
         self.layouts()
+        self.getEmployee()
 
     def mainDesign(self):
         self.employeesList = QListWidget()
@@ -54,6 +55,15 @@ class Main(QWidget):
         self.newEmployee = AddEmployee()
         self.close()
 
+    def getEmployee(self):
+        query="SELECT id,name,sirname FROM employees"
+        employees=cursor.execute(query).fetchall() #records
+        #i dont use commit func bcz we are not changing anything in the data base
+        #using for loop to exctract them
+        for employee in employees:
+            print (employee)#returns a tuple
+            self.employeesList.addItem(str(employee[0])+"-"+employee[1]+"-"+employee[2])#str bcz id is an integer
+
 
 class AddEmployee(QWidget):
     def __init__(self):
@@ -66,10 +76,12 @@ class AddEmployee(QWidget):
     def UI(self):
         self.mainDesign()
         self.layouts()
-    def closeEvent(self, event):# when we close the seconde window we obtaine a close event
-        self.main=Main() #whenever we close the seconde windows
-                        #we return to the first one by creating the main class everytime
-                        #main class contains self.show so it appears by itself
+
+
+    def closeEvent(self, QCloseEvent):# when we close the seconde window we obtaine a close event
+        self.main=Main()        #whenever we close the seconde windows
+                                #we return to the first one by creating the main class everytime
+                                #main class contains self.show so it appears by itself
 
     def mainDesign(self):
         #########################top layouts widgets##################
