@@ -22,8 +22,9 @@ class Main(QWidget):
         self.mainDesign()
         self.layouts()
         self.getEmployee()
-
+        self.displayFirstRecord()
     def mainDesign(self):
+        self.setStyleSheet("font-size: 14pt;font-family:Arial Bold;")
         self.employeesList = QListWidget()
         self.btnNew = QPushButton("New")
         self.btnNew.clicked.connect(self.addEmployee)
@@ -63,6 +64,28 @@ class Main(QWidget):
         for employee in employees:
             print (employee)#returns a tuple
             self.employeesList.addItem(str(employee[0])+"-"+employee[1]+"-"+employee[2])#str bcz id is an integer
+    def displayFirstRecord(self):
+        #to display one record : oredre by rowid ascending and the limit is 1 (1record)
+        query="SELECT * FROM employees ORDER BY ROWID ASC LIMIT 1"# iwantnt to display every feild
+        employee=cursor.execute(query).fetchone()
+        img =QLabel()
+        img.setPixmap(QPixmap("images/{}".format(employee[5])))
+        name=QLabel(employee[1])
+        surname=QLabel(employee[2])
+        phone=QLabel(employee[3])
+        email=QLabel(employee[4])
+        address=QLabel(employee[6])
+        self.leftLayout.setVerticalSpacing(20)#20 pixels between each widget 
+        self.leftLayout.addRow("",img)
+        self.leftLayout.addRow("Name:",name)
+        self.leftLayout.addRow("Surname: ",surname)
+        self.leftLayout.addRow("Phone: ",phone)
+        self.leftLayout.addRow("Email: ",email)
+        self.leftLayout.addRow("Address: ",address)
+
+
+
+
 
 
 class AddEmployee(QWidget):
