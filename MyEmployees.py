@@ -31,7 +31,7 @@ class Main(QWidget):
         self.btnNew.clicked.connect(self.addEmployee)
         self.btnUpdate = QPushButton("Update")
         self.btnDelete = QPushButton("Delete")
-
+        self.btnDelete.clicked.connect(self.deleteEmployee)
     def layouts(self):
         '''deffining layouts for our application'''
         ##################Layout#########################
@@ -99,7 +99,7 @@ class Main(QWidget):
         person=cursor.execute(query,(id,)).fetchone()#after query we should use a tuple / so a single item tuple=(1,)
         print(person)
         img = QLabel()
-        img.setPixmap(QPixmap("images/{}".format(employee[5])))
+        img.setPixmap(QPixmap("images/{}".format(person[5])))
         name = QLabel(person[1])
         surname = QLabel(person[2])
         phone = QLabel(person[3])
@@ -113,8 +113,22 @@ class Main(QWidget):
         self.leftLayout.addRow("Email: ", email)
         self.leftLayout.addRow("Address: ", address)
 
+    def deleteEmployee(self):
+        person=self.employeesList.currentItem().text()
+        id = person.split("-")[0]
+        nbox=QMessageBox.question(self,"WARNING","Are you sure you wante to delete this person?",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
+        if nbox == QMessageBox.Yes:#whenever you want to change something in database you need to use try except block
+            try:
+                query="DELETE FROM employees WHERE id=?"
+                cursor.execute(query,(id,))#tuple
+                connection.commit()
+                QMessageBox.information(self, "Information", "Person has not been deleted !!")
+                #after deleting the person we should update our window by closing and openning it
+                self.close()
+                self.main=Main()
 
-
+            except :
+                QMessageBox.information(self,"WARNING","Person has not been deleted !!")
 class AddEmployee(QWidget):
     def __init__(self):
         super().__init__()
