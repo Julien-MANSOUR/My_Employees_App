@@ -8,7 +8,7 @@ from PIL import Image  # pillow is a huge package we just need Image
 connection = sqlite3.connect("employees.db")
 cursor = connection.cursor()
 defaultImage = "person.png"  # if the employee dosnt have a picture
-
+person_id=None #variable globale pour l'utiliser dun classe a l'autre. on peut pas utiliser self
 
 class Main(QWidget):
     def __init__(self):
@@ -30,6 +30,7 @@ class Main(QWidget):
         self.btnNew = QPushButton("New")
         self.btnNew.clicked.connect(self.addEmployee)
         self.btnUpdate = QPushButton("Update")
+        self.btnUpdate.clicked.connect(self.updateEmployee)
         self.btnDelete = QPushButton("Delete")
         self.btnDelete.clicked.connect(self.deleteEmployee)
     def layouts(self):
@@ -114,21 +115,140 @@ class Main(QWidget):
         self.leftLayout.addRow("Address: ", address)
 
     def deleteEmployee(self):
-        person=self.employeesList.currentItem().text()
-        id = person.split("-")[0]
-        nbox=QMessageBox.question(self,"WARNING","Are you sure you wante to delete this person?",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
-        if nbox == QMessageBox.Yes:#whenever you want to change something in database you need to use try except block
-            try:
-                query="DELETE FROM employees WHERE id=?"
-                cursor.execute(query,(id,))#tuple
-                connection.commit()
-                QMessageBox.information(self, "Information", "Person has not been deleted !!")
-                #after deleting the person we should update our window by closing and openning it
-                self.close()
-                self.main=Main()
+        if self.employeesList.selectedItems():
+            person=self.employeesList.currentItem().text()
+            id = person.split("-")[0]
+            nbox=QMessageBox.question(self,"WARNING","Are you sure you wante to delete this person?",QMessageBox.Yes|QMessageBox.No,QMessageBox.No)
+            if nbox == QMessageBox.Yes:#whenever you want to change something in database you need to use try except block
+                try:
+                    query="DELETE FROM employees WHERE id=?"
+                    cursor.execute(query,(id,))#tuple
+                    connection.commit()
+                    QMessageBox.information(self, "Information", "Person has not been deleted !!")
+                    #after deleting the person we should update our window by closing and openning it
+                    self.close()
+                    self.main=Main()
 
-            except :
-                QMessageBox.information(self,"WARNING","Person has not been deleted !!")
+                except :
+                    QMessageBox.information(self,"WARNING","Person has not been deleted !!")
+        else:
+            QMessageBox.information(self,"Warning","Please select a person first ")
+
+    def updateEmployee(self):
+        global person_id
+        if self.employeesList.selectedItems():
+            person =self.employeesList.currentItem().text()
+            person_id=person.split("-")[0]
+            self.updateWindow=UpdateEmployee()
+            self.close()
+
+        else:
+            QMessageBox.information(self,"Warning","Please selecte a person to update")
+
+
+############################ UpdateEmployee Class #########################
+class UpdateEmployee(QWidget):
+    def __init__(self):
+        print("Ahhhhhhh class")
+        super().__init__()
+        self.setWindowTitle("Update Employee")
+        self.setGeometry(450, 150, 350, 600)
+        self.UI()
+        self.show()
+
+    def UI(self):
+        self.getPerson()
+        self.mainDesign()
+        self.layouts()
+
+
+    def closeEvent(self, QCloseEvent):# when we close the seconde window we obtaine a close event
+        self.main=Main()        #whenever we close the seconde windows
+                                #we return to the first one by creating the main class everytime
+                                #main class contains self.show so it appears by itself
+    def getPerson(self):
+        global person_id
+        print("global id", person_id)
+    def mainDesign(self):
+        #########################top layouts widgets##################
+        self.setStyleSheet("background-color: white;font-size: 14pt;font-family:Times")
+        self.title = QLabel("Update person")
+        self.title.setStyleSheet("font-size: 24pt;font-family:Arial bold ;background-color:orange")
+        self.imgAdd = QLabel()
+        self.imgAdd.setPixmap(QPixmap("icons/person.png"))
+        ########################bottom layouts widgets###############
+        self.nameLbl = QLabel("Name :")
+        self.nameEntry = QLineEdit()
+        self.nameEntry.setPlaceholderText("Enter Employee Name")
+        self.surnameLbl = QLabel("Surname :")
+        self.surnameEntry = QLineEdit()
+        self.surnameEntry.setPlaceholderText("Enter Employee surname")
+
+        self.phoneLbl = QLabel("Phone :")
+        self.phoneEntry = QLineEdit()
+        self.phoneEntry.setPlaceholderText("Enter Employee phone number")
+
+        self.emailLbl = QLabel("Email :")
+        self.emailEntry = QLineEdit()
+        self.emailEntry.setPlaceholderText("Enter Employee email")
+
+        self.nameLbl = QLabel("Name :")
+        self.nameEntry = QLineEdit()
+        self.nameEntry.setPlaceholderText("Enter Employee Name")
+
+        self.imgLbl = QLabel("Picture :")
+        self.imgButton = QPushButton("Browse")
+        self.imgButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
+        #self.imgButton.clicked.connect(self.uploadImage)
+
+        self.addressLbl = QLabel("Address :")
+        self.addressEditor = QTextEdit()
+        self.addButton = QPushButton("Update")
+        self.addButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
+        #self.addButton.clicked.connect(self.newEmployee)
+
+    def layouts(self):
+        ####################creating main layouts################
+        self.mainLayout = QVBoxLayout()
+        self.topLayout = QVBoxLayout()
+        self.bottomLayout = QFormLayout()
+        ######################creating child layouts to main layouts#######3
+        self.mainLayout.addLayout(self.topLayout)
+        self.mainLayout.addLayout(self.bottomLayout)
+        ######################## adding widgets to layouts#################
+        #####top layout####
+        self.topLayout.addStretch()
+        self.topLayout.addWidget(self.title)
+        self.topLayout.addWidget(self.imgAdd)
+        self.topLayout.addStretch()
+        self.topLayout.setContentsMargins(100, 20, 100, 30)  # left,top,right,bottom
+        #####Bottom layout#######
+        self.bottomLayout.addRow(self.nameLbl, self.nameEntry)
+        self.bottomLayout.addRow(self.surnameLbl, self.surnameEntry)
+        self.bottomLayout.addRow(self.phoneLbl, self.phoneEntry)
+        self.bottomLayout.addRow(self.emailLbl, self.emailEntry)
+        self.bottomLayout.addRow(self.imgLbl, self.imgButton)
+        self.bottomLayout.addRow(self.addressLbl, self.addressEditor)
+        self.bottomLayout.addRow("", self.addButton)
+        ####################setting main layout for our second window########
+        self.setLayout(self.mainLayout)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################Add EMployee Class#################################
 class AddEmployee(QWidget):
     def __init__(self):
         super().__init__()
