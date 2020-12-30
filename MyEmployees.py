@@ -214,14 +214,14 @@ class UpdateEmployee(QWidget):
         self.imgLbl = QLabel("Picture :")
         self.imgButton = QPushButton("Browse")
         self.imgButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
-        #self.imgButton.clicked.connect(self.uploadImage)
+        self.imgButton.clicked.connect(self.uploadImage)
 
         self.addressLbl = QLabel("Address :")
         self.addressEditor = QTextEdit()
         self.addressEditor.setText(self.address)
         self.addButton = QPushButton("Update")
         self.addButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
-        #self.addButton.clicked.connect(self.newEmployee)
+        self.addButton.clicked.connect(self.updateEmployee)
 
     def layouts(self):
         ####################creating main layouts################
@@ -249,6 +249,37 @@ class UpdateEmployee(QWidget):
         ####################setting main layout for our second window########
         self.setLayout(self.mainLayout)
 
+    def uploadImage(self):
+        global defaultImage
+        size = (128, 128)  # tuple width and hight
+        self.fileName, ok = QFileDialog.getOpenFileName(self, "Upload image", '', "Image Files (*.jpg *.png")
+        if ok:
+            defaultImage = os.path.basename(self.fileName)  # il nous donne le nom du picture.png sans tout le path
+            # replacing newfileName by defaultImage
+            img = Image.open(self.fileName)  # i used self.fileNAme bcz i need all the url
+            img = img.resize(size)
+            img.save("images/{}".format(defaultImage))  # we are saving our chosen image in the image folder
+
+    def updateEmployee(self):
+        global defaultImage
+        global person_id
+        name = self.nameEntry.text()
+        surname = self.surnameEntry.text()
+        phone = self.phoneEntry.text()
+        email = self.emailEntry.text()
+        img = defaultImage
+        address = self.addressEditor.toPlainText()
+        if (name and surname and phone != ""):
+            try:  # if you want to make a data base record we should use try exept
+                query = "UPDATE employees set name =?, sirname=?, phone=?, email=?, image=?,address=? WHERE id=?" #update function
+                cursor.execute(query, (name, surname, phone, email, img, address,person_id))
+                connection.commit()
+                QMessageBox.information(self, "Success", "Person has been updated")
+                self.close() #it returns to the main window grace a close event
+            except:
+                QMessageBox.warning(self, "Warning", "Person has not been updated")
+        else:
+            QMessageBox.warning(self, "WARNING", "Fields can not be empty")
 
 
 
