@@ -168,33 +168,48 @@ class UpdateEmployee(QWidget):
                                 #main class contains self.show so it appears by itself
     def getPerson(self):
         global person_id
-        print("global id", person_id)
+        query="SELECT * FROM employees WHERE id=?"
+        employee=cursor.execute(query,(person_id,)).fetchone()#employee => (4,'john','snow','+95151315','jon@gmail.com',"person.pmg","winterfall")
+        print("employee",employee)
+        self.name=employee[1]
+        self.surname=employee[2]
+        self.phone=employee[3]
+        self.email=employee[4]
+        self.image=employee[5]
+        self.address=employee[6]
+
     def mainDesign(self):
+
         #########################top layouts widgets##################
         self.setStyleSheet("background-color: white;font-size: 14pt;font-family:Times")
         self.title = QLabel("Update person")
         self.title.setStyleSheet("font-size: 24pt;font-family:Arial bold ;background-color:orange")
         self.imgAdd = QLabel()
-        self.imgAdd.setPixmap(QPixmap("icons/person.png"))
+        self.imgAdd.setPixmap(QPixmap("images/{}".format(self.image)))
         ########################bottom layouts widgets###############
         self.nameLbl = QLabel("Name :")
         self.nameEntry = QLineEdit()
-        self.nameEntry.setPlaceholderText("Enter Employee Name")
+        self.nameEntry.setText(self.name)
+
+        #self.nameEntry.setPlaceholderText("Enter Employee Name")
         self.surnameLbl = QLabel("Surname :")
         self.surnameEntry = QLineEdit()
-        self.surnameEntry.setPlaceholderText("Enter Employee surname")
+        self.surnameEntry.setText(self.surname)
+        #self.surnameEntry.setPlaceholderText("Enter Employee surname")
 
         self.phoneLbl = QLabel("Phone :")
         self.phoneEntry = QLineEdit()
-        self.phoneEntry.setPlaceholderText("Enter Employee phone number")
+        self.phoneEntry.setText(self.phone)
+        #self.phoneEntry.setPlaceholderText("Enter Employee phone number")
 
         self.emailLbl = QLabel("Email :")
         self.emailEntry = QLineEdit()
-        self.emailEntry.setPlaceholderText("Enter Employee email")
+        self.emailEntry.setText(self.email)
+        #self.emailEntry.setPlaceholderText("Enter Employee email")
 
-        self.nameLbl = QLabel("Name :")
-        self.nameEntry = QLineEdit()
-        self.nameEntry.setPlaceholderText("Enter Employee Name")
+        # self.nameLbl = QLabel("Name :")
+        # self.nameEntry = QLineEdit()
+        # #self.nameEntry.setPlaceholderText("Enter Employee Name")
 
         self.imgLbl = QLabel("Picture :")
         self.imgButton = QPushButton("Browse")
@@ -203,6 +218,7 @@ class UpdateEmployee(QWidget):
 
         self.addressLbl = QLabel("Address :")
         self.addressEditor = QTextEdit()
+        self.addressEditor.setText(self.address)
         self.addButton = QPushButton("Update")
         self.addButton.setStyleSheet("background-color:orange;font-size:10pt;font-family:Arial")
         #self.addButton.clicked.connect(self.newEmployee)
@@ -290,9 +306,9 @@ class AddEmployee(QWidget):
         self.emailEntry = QLineEdit()
         self.emailEntry.setPlaceholderText("Enter Employee email")
 
-        self.nameLbl = QLabel("Name :")
-        self.nameEntry = QLineEdit()
-        self.nameEntry.setPlaceholderText("Enter Employee Name")
+        # self.nameLbl = QLabel("Name :")
+        # self.nameEntry = QLineEdit()
+        # self.nameEntry.setPlaceholderText("Enter Employee Name")
 
         self.imgLbl = QLabel("Picture :")
         self.imgButton = QPushButton("Browse")
